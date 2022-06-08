@@ -61,10 +61,20 @@ body, html {
     font-family: Tekton;
 }
 
+.inactive {
+    pointer-events: none;
+}
+
 .cell:hover {
     background-color: whitesmoke;
     box-shadow: 0px 0px 10px black inset;
     font-size: 9rem;
     text-shadow: 0 0 5px var(--TEXT-OUTLINE), 0 0 5px var(--TEXT-OUTLINE), 0 0 5px var(--TEXT-OUTLINE), 0 0 5px var(--TEXT-OUTLINE);
     color: var(--TEXT-COLOR)
+}
+
+.win {
+    background-color: rgba(197, 180, 180, 0.548);
+    color: rgb(37, 197, 5);
+    text-shadow: 0 0 5px var(--TEXT-COLOR), 0 0 5px var(--TEXT-COLOR), 0 0 5px var(--TEXT-COLOR), 0 0 5px var(--TEXT-COLOR);
 }

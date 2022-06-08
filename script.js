@@ -13,12 +13,12 @@ const Board = (() => {
             cell.addEventListener("click", (e) => {
                 if(cell.innerHTML !== "" ){return}
                 if(!winCheck.getWin()){
-                    console.log(e.target.getAttribute("cell_id"));
+                    // console.log(e.target.getAttribute("cell_id"));
                     _boardCellsValue[e.target.getAttribute("cell_id")] = Game.getActivePlayer().getMark();
                     Board.render();
                     winCheck.checkWin();
-                    console.log(winCheck.getWin());
-                    console.log(winCheck.getWinner());
+                    // console.log(winCheck.getWin());
+                    // console.log(winCheck.getWinner());
                     Game.changeActivePlayer();
                 }
                 else {
@@ -62,6 +62,15 @@ const winCheck = (() => {
         Board.getBoardCells().forEach((cell) => {cell.classList.add("inactive")});
         
     };
+
+    const _checkDraw = () => {
+        return Board.getBoardCellsValue().includes("");
+    } 
+
+    const _setDraw = () => {
+        console.log("draw");
+            Board.getBoardCells().forEach((cell) => {cell.classList.add("inactive draw")});
+    }
     const checkWin = () => {
 
         // Horizontal check
@@ -104,6 +113,12 @@ const winCheck = (() => {
                  Board.getBoardCellsValue()[5] === Board.getBoardCellsValue()[8])) {
                  _setWin(Board.getBoardCells()[2], Board.getBoardCells()[5], Board.getBoardCells()[8]);
         }
+        
+        // Check draw
+        else if(!_checkDraw()){
+            console.log("draw");
+            Board.getBoardCells().forEach((cell) => {cell.classList.add("inactive", "draw")});
+        }
 
         
     }
@@ -112,27 +127,41 @@ const winCheck = (() => {
 })();
 
 const Game = (()=> {
-    const _firstPlayer = Player("First", "X");
-    const _secondPlayer = Player("Second", "O");
-    let _activePlayer = _firstPlayer;
-    
+    let _firstPlayerName = document.querySelector("#first_player");
+    let _secondPlayerName = document.querySelector("#second_player");
+    const _PlayerName = () => {
+         const _first = Player(_firstPlayerName.value, "X");
+         const _second = Player(_secondPlayerName.value, "O");
+
+         _firstPlayerName.classList.add("inactive-input");
+         _secondPlayerName.classList.add("inactive-input");
+
+        return {_first, _second};
+        
+    }
+
+    let _activePlayer = _PlayerName()._first;
+    console.log(_activePlayer);
+
     const getActivePlayer = () => {return _activePlayer};
     const changeActivePlayer = () => {
         console.log(_activePlayer.getName());
-        if(_activePlayer.getName() === _firstPlayer.getName()){
-            _activePlayer = _secondPlayer;
+        if(_activePlayer.getName() === _PlayerName()._first.getName()){
+            _activePlayer = _PlayerName()._second;
         }else{
-            _activePlayer = _firstPlayer;
+            _activePlayer = _PlayerName()._first;
         }
     
     };
     const start = () => {
+        _PlayerName();
         Board.setBoardCellValue();
         Board.render();
     }
-    
+    _firstPlayerName.classList.remove("inactive-input");
+    _secondPlayerName.classList.remove("inactive-input");
     return {start, changeActivePlayer, getActivePlayer};
 })();
 
-
-Game.start();
+document.querySelector(".start").addEventListener("click", () => {Game.start()});
+// Game.start();

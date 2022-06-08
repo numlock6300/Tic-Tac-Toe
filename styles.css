@@ -18,16 +18,19 @@ body, html {
 .main-container {
     background-color: blanchedalmond;
     display: grid;
-    place-items: center;
+    grid-template-columns: 1fr 0.3fr;
     min-height: 100vh;
+    padding: 10px;
 }
 
 .board-container {
+    justify-self:center;
+    align-self: center;
     border: 3px solid black;
     max-width: 800px;
-    min-width: 600px;
+    min-width: 600px; 
     max-height: 800px;
-    min-height: 600px;
+    min-height: 600px; 
     display: grid;
     /* grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr); */
@@ -77,4 +80,103 @@ body, html {
     background-color: rgba(197, 180, 180, 0.548);
     color: rgb(37, 197, 5);
     text-shadow: 0 0 5px var(--TEXT-COLOR), 0 0 5px var(--TEXT-COLOR), 0 0 5px var(--TEXT-COLOR), 0 0 5px var(--TEXT-COLOR);
+}
+
+.draw {
+    background-color: rgba(197, 180, 180, 0.548);
+    color: rgb(219, 50, 8);
+    text-shadow: 0 0 5px var(--TEXT-COLOR), 0 0 5px var(--TEXT-COLOR), 0 0 5px var(--TEXT-COLOR), 0 0 5px var(--TEXT-COLOR);
+}
+
+.controls-container {
+    display: grid;
+    grid-template-rows: 0.2fr auto 1fr;
+    padding-right: 10rem;
+    padding-left: 10px;
+    
+
+}
+
+.inputs-container {
+    display: grid;
+    gap: 1rem;
+
+}
+
+.input-container {
+    display: grid;
+    justify-content: center;
+    gap: 0.2rem
+}
+
+label {
+    justify-self: center;
+    font-family: Tekton;
+    font-size: 1rem;
+}
+
+input[type="text"] {
+    appearance: none;
+    outline: none;
+    border: none;
+    font-size: 2rem;
+    font-family: Tekton;
+    text-align: center;
+    border-radius: 10px;
+}
+
+input[type="text"]:hover {
+    /* background-color:rgb(143, 215, 233); */
+    background: radial-gradient(white,rgb(143, 215, 233));
+    color: rgb(15, 105, 207);
+}
+
+.inactive-input {
+    pointer-events: none;
+    background: radial-gradient(white,rgb(143, 215, 233));
+    color: rgb(15, 105, 207);
+
+}
+
+.buttons-container {
+    display: grid;
+    grid-template-rows: repeat(2, minmax(25px, 75px));
+    padding: 5px;
+}
+
+.start-container,
+.restart-container {
+    display:grid;
+    align-self: center;
+    justify-self: center;
+}
+
+.start,
+.restart {
+    font-family: Tekton;
+    font-size: 1rem;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    appearance: none;
+    width: 100px;
+    height: 50px;
+}
+
+.start:hover,
+.restart:hover {
+    background-color: coral;
+    color:white;
+
+}
+
+.start:active,
+.restart:active {
+    background-color: darkred;
+    color:white;
+    box-shadow: 0px 0px 10px white inset;
+}
+
+.hidden {
+    display: none;
 }

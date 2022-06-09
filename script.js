@@ -6,7 +6,7 @@ const Board = (() => {
     const _boardCells = Array.from(document.querySelectorAll(".cell"));
 
     const getBoardCellsValue = () => {return _boardCellsValue};
-    
+
     const setBoardCellValue = () => {
         console.log(winCheck.getWin());
         _boardCells.forEach((cell) => {
@@ -37,9 +37,48 @@ const Board = (() => {
         });
         
     };
-    return {render, setBoardCellValue, getBoardCells, getBoardCellsValue};
+
+    const resetBoard = () => {
+        _boardCellsValue = ["", "", "", 
+                            "", "", "", 
+                            "", "", ""];
+        render();
+    
+    };
+    
+    return {render, setBoardCellValue, getBoardCells, getBoardCellsValue, resetBoard};
 
 })();
+
+const GameEnd = (() => {
+    const _resultWindow = document.createElement("div");
+    const _body = document.querySelector("body");
+    _resultWindow.classList.add("result", "hidden");
+    _body.appendChild(_resultWindow);
+
+    const _resultMessageContainer = document.createElement("div");
+    _resultMessageContainer.classList.add("result-message");
+    _resultMessageContainer.innerHTML = `The winner is _winner.Congratulations!`;
+    _resultWindow.appendChild(_resultMessageContainer);
+
+    const _resultButton = document.createElement("button");
+    _resultButton.innerHTML = "Ok";
+    _resultButton.classList.add("result-button");
+    _resultWindow.appendChild(_resultButton);
+
+    _resultButton.addEventListener("click", () => {_resultWindow.classList.add("hidden")});
+
+    const WinMessage = (winner)=> {
+        _resultMessageContainer.innerHTML = `The winner is ${winner}. Congratulations!`;
+        _resultWindow.classList.remove("hidden");
+    };
+
+    const DrawMessage = () => {
+        _resultMessageContainer.innerHTML = `It's a draw.`;
+        _resultWindow.classList.remove("hidden");
+    }
+    return {WinMessage, DrawMessage};
+})()
 
 const Player = (playerName, mark) => {
     const getName = () => playerName;
@@ -49,6 +88,7 @@ const Player = (playerName, mark) => {
 };
 
 const winCheck = (() => {
+    const _changePlayerButton = document.querySelector(".change-container");
     let _win = false;
     let _winner = "";
     const getWin = () => {return _win};
@@ -60,17 +100,16 @@ const winCheck = (() => {
         cell2.classList.add("win");
         cell3.classList.add("win");
         Board.getBoardCells().forEach((cell) => {cell.classList.add("inactive")});
+        GameEnd.WinMessage(_winner);
+        _changePlayerButton.classList.remove("hidden");
+        console.log(`The winner is ${_winner}. Congratulations!`)
         
     };
 
     const _checkDraw = () => {
         return Board.getBoardCellsValue().includes("");
-    } 
+    } ;
 
-    const _setDraw = () => {
-        console.log("draw");
-            Board.getBoardCells().forEach((cell) => {cell.classList.add("inactive draw")});
-    }
     const checkWin = () => {
 
         // Horizontal check
@@ -116,19 +155,28 @@ const winCheck = (() => {
         
         // Check draw
         else if(!_checkDraw()){
-            console.log("draw");
+            console.log("It's a draw.");
             Board.getBoardCells().forEach((cell) => {cell.classList.add("inactive", "draw")});
+            _changePlayerButton.classList.remove("hidden");
+            GameEnd.DrawMessage();
         }
 
         
+    };
+
+    const restart = () => {
+        _win = false;
+        _winner = "";
+        _changePlayerButton.classList.add("hidden");
     }
 
-    return {getWin, checkWin, getWinner};
+    return {getWin, checkWin, getWinner, restart};
 })();
 
 const Game = (()=> {
     let _firstPlayerName = document.querySelector("#first_player");
     let _secondPlayerName = document.querySelector("#second_player");
+    const _changePlayerButton = document.querySelector(".change-player");
     const _PlayerName = () => {
          const _first = Player(_firstPlayerName.value, "X");
          const _second = Player(_secondPlayerName.value, "O");
@@ -141,27 +189,52 @@ const Game = (()=> {
     }
 
     let _activePlayer = _PlayerName()._first;
-    console.log(_activePlayer);
 
     const getActivePlayer = () => {return _activePlayer};
     const changeActivePlayer = () => {
         console.log(_activePlayer.getName());
-        if(_activePlayer.getName() === _PlayerName()._first.getName()){
+        if(_activePlayer.getMark() === _PlayerName()._first.getMark()){
             _activePlayer = _PlayerName()._second;
         }else{
             _activePlayer = _PlayerName()._first;
         }
     
     };
+
+    const restart = () => {
+        console.log("restart");
+        Board.getBoardCells().forEach((cell) => {cell.classList.remove("inactive", "win", "draw")});
+        _activePlayer = _PlayerName()._first;
+        Board.resetBoard();
+        winCheck.restart();
+    }
+
     const start = () => {
-        _PlayerName();
-        Board.setBoardCellValue();
-        Board.render();
+        if(winCheck.getWin()){
+            _firstPlayerName.classList.add("inactive-input");
+            _secondPlayerName.classList.add("inactive-input");
+            _PlayerName();
+            restart();
+        }
+        else {
+            _PlayerName();
+            Board.setBoardCellValue();
+            document.querySelector(".restart-container").classList.remove("hidden");
+            Board.render();
+        }
+        
+    };
+
+    const changePlayers = () => {
+        _firstPlayerName.classList.remove("inactive-input");
+        _secondPlayerName.classList.remove("inactive-input");
     }
     _firstPlayerName.classList.remove("inactive-input");
     _secondPlayerName.classList.remove("inactive-input");
-    return {start, changeActivePlayer, getActivePlayer};
+    return {start, restart, changeActivePlayer, getActivePlayer, changePlayers};
 })();
 
 document.querySelector(".start").addEventListener("click", () => {Game.start()});
+document.querySelector(".restart").addEventListener("click", () => {Game.restart()});
+document.querySelector(".change-player").addEventListener("click", () => {Game.changePlayers()});
 // Game.start();
